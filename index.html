@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QazRikai — Мгновенный казахский словарь</title>
+    <meta name="description" content="Бесплатное расширение для Chrome. Перевод казахских слов на лету.">
+    <link rel="icon" type="image/png" href="icon128.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #008DAD; /* Твой фирменный бирюзовый */
+            --accent: #FFC107;  /* Желтый для кнопок (стрелка лого) */
+            --dark: #1F2937;
+            --light: #F3F4F6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            margin-left: 20px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            color: var(--dark);
+        }
+        .hero h1 span {
+            color: var(--primary);
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: #6B7280;
+            max-width: 600px;
+            margin: 0 auto 40px auto;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        .btn-accent {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+        .hero-image {
+            margin-top: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 141, 173, 0.2);
+            max-width: 100%;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* --- FEATURES --- */
+        .features {
+            background-color: var(--light);
+            padding: 80px 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 50px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        /* --- FORM SECTION --- */
+        .contribute {
+            padding: 80px 20px;
+            background-color: white;
+        }
+        .form-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #f9fafb;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #e5e7eb;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box; /* Важно для отступов */
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover {
+            background-color: #00708a;
+        }
+        .status-msg {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--dark);
+            color: #9CA3AF;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        footer a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        /* Адаптив для телефонов */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; } /* Скроем меню на мобильных для простоты */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <img src="icon128.png" alt="Logo">
+                <span>QazRikai</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#features">Возможности</a>
+                <a href="#contribute">Добавить слово</a>
+                <a href="https://github.com/QazRikai" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Понимай казахский <br><span>мгновенно</span></h1>
+        <p>Бесплатное расширение для браузера. Наведи курсор на любое слово и получи мгновенный перевод. Быстро, просто, open-source.</p>
+        
+        <div class="btn-group">
+            <a href="#" class="btn btn-primary"><i class="fab fa-chrome"></i> Скачать бесплатно</a>
+            <a href="https://www.buymeacoffee.com/qazrikai" target="_blank" class="btn btn-accent">☕ Поддержать проект</a>
+        </div>
+
+        <img src="banner.jpg" alt="QazRikai Demo" class="hero-image">
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Почему QazRikai?</h2>
+            <div class="grid">
+                <div class="feature-card">
+                    <i class="fas fa-bolt feature-icon"></i>
+                    <h3>Молниеносно</h3>
+                    <p>Никаких кликов. Просто наведи мышку, и перевод появится во всплывающем окне.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-database feature-icon"></i>
+                    <h3>Огромная база</h3>
+                    <p>Более 40,000 слов и фраз. Работает даже со сложными окончаниями.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-code feature-icon"></i>
+                    <h3>Open Source</h3>
+                    <p>Честный код. Мы не следим за вами. Проект открыт на GitHub для всех.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contribute" class="contribute">
+        <div class="container">
+            <h2 class="section-title">Помоги улучшить словарь</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: #666;">
+                Не нашел слово? Нашел ошибку? Отправь нам, и мы добавим это в базу.
+            </p>
+            
+            <div class="form-box">
+                <form id="suggestionForm">
+                    <div class="form-group">
+                        <label>Тип заявки</label>
+                        <select name="type" required>
+                            <option value="new_word">Предложить новое слово</option>
+                            <option value="correction">Сообщить об ошибке</option>
+                            <option value="feedback">Отзыв / Другое</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Слово или фраза (Content Main)</label>
+                        <input type="text" name="content_main" placeholder="Например: Сәлем" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Перевод или суть (Content Sub)</label>
+                        <input type="text" name="content_sub" placeholder="Например: Привет / Hello">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Комментарий (Extra)</label>
+                        <textarea name="extra" placeholder="Дополнительные детали..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Ваш Email (необязательно)</label>
+                        <input type="email" name="email" placeholder="name@example.com">
+                    </div>
+
+                    <input type="hidden" name="lang" value="kk">
+
+                    <button type="submit" class="submit-btn">Отправить 🚀</button>
+                    <div id="statusMessage" class="status-msg"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 QazRikai. Developed in Tokyo 🇯🇵</p>
+        <p>
+            <a href="mailto:support@qazrikai.com">Контакты</a>
+            <a href="https://github.com/QazRikai" target="_blank">GitHub</a>
+            <a href="https://www.buymeacoffee.com/qazrikai" target="_blank">Donate</a>
+        </p>
+    </footer>
+
+    <script>
+        const form = document.getElementById('suggestionForm');
+        const statusMsg = document.getElementById('statusMessage');
+
+        // Твоя ссылка на скрипт, которую ты прислал
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTgt9iW0V-XE3mCgfm09LYcsda0_lVpnUeyG5SKaiqiYhxTSjPHw6zNTlxxmrIIVDz/exec';
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Визуальный эффект загрузки
+            const btn = form.querySelector('.submit-btn');
+            const originalText = btn.innerText;
+            btn.innerText = 'Отправка...';
+            btn.disabled = true;
+
+            // Собираем данные
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            // Отправляем
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                // Важный хак для CORS: отправляем как text/plain, но внутри JSON
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "text/plain;charset=utf-8" }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if(result.result === 'success') {
+                    statusMsg.innerText = "✅ Спасибо! Мы получили ваше сообщение.";
+                    statusMsg.style.color = "green";
+                    form.reset();
+                } else {
+                    throw new Error(result.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error!', error);
+                statusMsg.innerText = "⚠️ Ошибка при отправке. Попробуйте позже.";
+                statusMsg.style.color = "red";
+            })
+            .finally(() => {
+                statusMsg.style.display = 'block';
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
