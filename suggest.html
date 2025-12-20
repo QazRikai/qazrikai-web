@@ -571,6 +571,7 @@
                 switcherTitle: 'Немесе басқа түрді таңдаңыз:',
                 btnBug: '🐛 Ақаулық туралы хабарлау',
                 btnFeedback: '💬 Пікір жазу',
+                btnNewWord: 'Жаңа сөз ұсыну',
                 footerContact: 'Байланыс',
                 
                 // Form: New Word
@@ -618,6 +619,7 @@
                 switcherTitle: 'Или выберите другой тип обращения:',
                 btnBug: '🐛 Сообщить о баге',
                 btnFeedback: '💬 Написать отзыв',
+                btnNewWord: 'Предложить слово',
                 footerContact: 'Контакты',
                 
                 // Form: New Word
@@ -665,6 +667,7 @@
                 switcherTitle: 'Or choose another type:',
                 btnBug: '🐛 Report a Bug',
                 btnFeedback: '💬 Write Feedback',
+                btnNewWord: 'Suggest a Word',
                 footerContact: 'Contact',
                 
                 formTitleNewWord: 'Suggest a New Word',
@@ -709,6 +712,7 @@
                 switcherTitle: 'または別のタイプを選択:',
                 btnBug: '🐛 バグを報告',
                 btnFeedback: '💬 フィードバックを書く',
+                btnNewWord: '単語を提案',
                 footerContact: '連絡先',
                 
                 formTitleNewWord: '新しい単語を提案',
@@ -919,31 +923,50 @@
             formContent.innerHTML = html;
             formContent.classList.add('fade-transition');
             
-            // Update switcher visibility
+            // Update switcher - show buttons for other two form types
             const switcher = document.getElementById('formSwitcher');
+            const switcherTitle = document.getElementById('switcherTitle');
+            const typeButtons = document.querySelector('.type-buttons');
+            
+            switcherTitle.textContent = t.switcherTitle;
+            
+            // Build buttons for the other two types
+            let buttonsHTML = '';
             if (type === 'new_word') {
-                switcher.style.display = 'block';
-            } else {
-                switcher.style.display = 'none';
+                buttonsHTML = `
+                    <button class="type-btn" data-type="bug">${t.btnBug}</button>
+                    <button class="type-btn" data-type="feedback">${t.btnFeedback}</button>
+                `;
+            } else if (type === 'bug') {
+                buttonsHTML = `
+                    <button class="type-btn" data-type="new_word">${t.btnNewWord}</button>
+                    <button class="type-btn" data-type="feedback">${t.btnFeedback}</button>
+                `;
+            } else if (type === 'feedback') {
+                buttonsHTML = `
+                    <button class="type-btn" data-type="new_word">${t.btnNewWord}</button>
+                    <button class="type-btn" data-type="bug">${t.btnBug}</button>
+                `;
             }
+            
+            typeButtons.innerHTML = buttonsHTML;
+            switcher.style.display = 'block';
+            
+            // Re-attach click handlers for new buttons
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const newType = this.dataset.type;
+                    renderForm(newType);
+                    document.querySelector('.form-container').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                });
+            });
             
             // Attach form handler
             setTimeout(() => attachFormHandler(), 100);
         }
-
-        // Form type switcher
-        document.querySelectorAll('.type-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const type = this.dataset.type;
-                renderForm(type);
-                
-                // Scroll to form
-                document.querySelector('.form-container').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            });
-        });
 
         // Form submission handler
         function attachFormHandler() {
