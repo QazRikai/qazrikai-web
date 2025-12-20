@@ -571,7 +571,7 @@
                 switcherTitle: 'Немесе басқа түрді таңдаңыз:',
                 btnBug: '🐛 Ақаулық туралы хабарлау',
                 btnFeedback: '💬 Пікір жазу',
-                btnNewWord: 'Жаңа сөз ұсыну',
+                btnNewWord: '📝 Жаңа сөз ұсыну',
                 footerContact: 'Байланыс',
                 
                 // Form: New Word
@@ -619,7 +619,7 @@
                 switcherTitle: 'Или выберите другой тип обращения:',
                 btnBug: '🐛 Сообщить о баге',
                 btnFeedback: '💬 Написать отзыв',
-                btnNewWord: 'Предложить слово',
+                btnNewWord: '📝 Предложить слово',
                 footerContact: 'Контакты',
                 
                 // Form: New Word
@@ -667,7 +667,7 @@
                 switcherTitle: 'Or choose another type:',
                 btnBug: '🐛 Report a Bug',
                 btnFeedback: '💬 Write Feedback',
-                btnNewWord: 'Suggest a Word',
+                btnNewWord: '📝 Suggest a Word',
                 footerContact: 'Contact',
                 
                 formTitleNewWord: 'Suggest a New Word',
@@ -712,7 +712,7 @@
                 switcherTitle: 'または別のタイプを選択:',
                 btnBug: '🐛 バグを報告',
                 btnFeedback: '💬 フィードバックを書く',
-                btnNewWord: '単語を提案',
+                btnNewWord: '📝 単語を提案',
                 footerContact: '連絡先',
                 
                 formTitleNewWord: '新しい単語を提案',
@@ -763,12 +763,9 @@
             
             // Update page elements
             document.getElementById('btnHome').textContent = t.btnHome;
-            document.getElementById('switcherTitle').textContent = t.switcherTitle;
-            document.getElementById('btnBug').textContent = t.btnBug;
-            document.getElementById('btnFeedback').textContent = t.btnFeedback;
             document.getElementById('footerContact').textContent = t.footerContact;
             
-            // Re-render current form
+            // Re-render current form (will update all form content and buttons)
             renderForm(currentFormType);
         }
 
