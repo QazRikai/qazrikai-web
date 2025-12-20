@@ -33,7 +33,6 @@
             background: linear-gradient(180deg, var(--light) 0%, white 50%);
             line-height: 1.6;
             min-height: 100vh;
-            /* Отступ снизу, чтобы контент не перекрывался выезжающим футером */
             padding-bottom: 120px; 
         }
 
@@ -423,28 +422,30 @@
 
         .footer-links {
             margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
-        .footer-links a {
+        .footer-links a, 
+        .footer-links .static-text {
             color: white;
-            margin: 0 15px;
             text-decoration: none;
             transition: color 0.3s;
             font-size: 0.95rem;
         }
 
+        .footer-links .static-text {
+            cursor: text; /* Чтобы было понятно, что это текст, а не ссылка */
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .footer-links a:hover {
             color: var(--accent);
-        }
-
-        .footer-links .github-link {
-            color: #a0aec0;
-            font-size: 0.85rem;
-            opacity: 0.7;
-        }
-
-        .footer-links .github-link:hover {
-            opacity: 1;
         }
 
         .footer-copyright {
@@ -524,9 +525,10 @@
 
     <footer>
         <div class="footer-links">
-            <a href="mailto:support@qazrikai.com"><i class="fas fa-envelope"></i> <span id="footerContact">Байланыс / Контакты</span></a>
+            <span class="static-text"><i class="fas fa-envelope"></i> support@qazrikai.com</span>
+            
             <a href="https://www.buymeacoffee.com/qazrikai" target="_blank"><i class="fas fa-coffee"></i> Donate</a>
-            <a href="https://github.com/QazRikai" target="_blank" class="github-link"><i class="fab fa-github"></i> GitHub</a>
+            <a href="https://github.com/QazRikai" target="_blank"><i class="fab fa-github"></i> GitHub</a>
         </div>
         <p class="footer-copyright">&copy; 2025 QazRikai</p>
     </footer>
@@ -568,7 +570,7 @@
                 btnBug: '🐛 Ақаулық туралы хабарлау',
                 btnFeedback: '💬 Пікір жазу',
                 btnNewWord: '📝 Жаңа сөз ұсыну',
-                footerContact: 'Байланыс',
+                // footerContact удален, так как там теперь статический email
                 formTitleNewWord: 'Жаңа сөз ұсыну',
                 formIntroNewWord: 'Сөздікте жоқ сөзді таптыңыз ба? Немесе аудармада қате байқадыңыз ба? Сіздің ұсынысыңызды қуана қабылдаймыз!',
                 rulesTitle: 'Сөздік ережелері:',
@@ -607,7 +609,6 @@
                 btnBug: '🐛 Сообщить о баге',
                 btnFeedback: '💬 Написать отзыв',
                 btnNewWord: '📝 Предложить слово',
-                footerContact: 'Контакты',
                 formTitleNewWord: 'Предложить новое слово',
                 formIntroNewWord: 'Нашли слово, которого нет в словаре? Или заметили ошибку в переводе? Будем рады вашему предложению!',
                 rulesTitle: 'Правила словаря:',
@@ -646,7 +647,6 @@
                 btnBug: '🐛 Report a Bug',
                 btnFeedback: '💬 Write Feedback',
                 btnNewWord: '📝 Suggest a Word',
-                footerContact: 'Contact',
                 formTitleNewWord: 'Suggest a New Word',
                 formIntroNewWord: 'Found a word that\'s missing? Spotted a translation error? We\'d love your suggestion!',
                 rulesTitle: 'Dictionary rules:',
@@ -685,7 +685,6 @@
                 btnBug: '🐛 バグを報告',
                 btnFeedback: '💬 フィードバックを書く',
                 btnNewWord: '📝 単語を提案',
-                footerContact: '連絡先',
                 formTitleNewWord: '新しい単語を提案',
                 formIntroNewWord: '辞書にない単語を見つけましたか？翻訳の誤りに気づきましたか？ご提案をお待ちしています！',
                 rulesTitle: '辞書のルール:',
@@ -726,7 +725,7 @@
             const t = translations[lang];
             
             document.getElementById('btnHome').textContent = t.btnHome;
-            document.getElementById('footerContact').textContent = t.footerContact;
+            // footerContact больше не обновляем, он статичен
             renderForm(currentFormType);
         }
 
@@ -924,7 +923,6 @@
             const scrollPosition = window.scrollY + window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
             
-            // Если до низа страницы осталось меньше 10 пикселей (или страница короткая)
             if (scrollPosition >= documentHeight - 10) {
                 footer.classList.add('visible');
             } else {
@@ -938,7 +936,6 @@
         // Init
         updateLanguage(currentLang);
         renderForm('new_word');
-        // Проверяем футер при загрузке (вдруг страница короткая)
         setTimeout(checkFooter, 500); 
 
     </script>
