@@ -33,6 +33,8 @@
             background: linear-gradient(180deg, var(--light) 0%, white 50%);
             line-height: 1.6;
             min-height: 100vh;
+            /* Отступ снизу, чтобы контент не перекрывался выезжающим футером */
+            padding-bottom: 120px; 
         }
 
         /* --- HEADER --- */
@@ -395,13 +397,28 @@
             transform: translateY(-2px);
         }
 
-        /* --- FOOTER --- */
+        /* --- FOOTER (HIDDEN BY DEFAULT) --- */
         footer {
             background: var(--dark);
             color: #a0aec0;
-            padding: 30px 30px 20px;
+            padding: 20px 30px;
             text-align: center;
-            margin-top: 40px;
+            
+            /* Фиксируем внизу */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            
+            /* Прячем за пределы экрана */
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out; /* Плавное появление */
+        }
+
+        /* Класс для отображения футера */
+        footer.visible {
+            transform: translateY(0);
         }
 
         .footer-links {
@@ -441,29 +458,13 @@
             .main-container {
                 padding: 0 20px 40px;
             }
-
-            .page-title {
-                font-size: 2rem;
-            }
-
-            .title-secondary {
-                font-size: 1.5rem;
-            }
-
-            .search-box,
-            .form-container {
-                padding: 24px;
-            }
-
             .header-actions {
                 flex-direction: column;
                 gap: 12px;
             }
-
             .type-buttons {
                 flex-direction: column;
             }
-
             .type-btn {
                 width: 100%;
                 justify-content: center;
@@ -531,24 +532,20 @@
     </footer>
 
     <script>
-        // Load dictionary - removed as search is not needed
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynUXqWxMo8Y39Iq3ijsKd99QjWy6aZh2VpN7HyK7NPzPPT8mzZFHlAQhygrQv4NqCN/exec';
 
-        // Language detection and management
-        let currentLang = 'en'; // default to English
+        // === LANGUAGE LOGIC ===
+        let currentLang = 'en';
 
-        // Detect language from URL or browser
         function detectLanguage() {
             const urlParams = new URLSearchParams(window.location.search);
             const urlLang = urlParams.get('lang');
             
-            // Исправлено: добавлена поддержка 'ja', убрана 'jp'
             if (urlLang && ['kk', 'ru', 'en', 'ja'].includes(urlLang)) {
                 return urlLang;
             }
             
             const savedLang = localStorage.getItem('qazrikai_lang');
-            // Исправлено: проверка сохраненного языка тоже на 'ja'
             if (savedLang && ['kk', 'ru', 'en', 'ja'].includes(savedLang)) {
                 return savedLang;
             }
@@ -556,16 +553,14 @@
             const browserLang = navigator.language.toLowerCase();
             if (browserLang.startsWith('kk') || browserLang.startsWith('kz')) return 'kk';
             if (browserLang.startsWith('ru')) return 'ru';
-            // Исправлено: браузер отдает 'ja', возвращаем 'ja'
             if (browserLang.startsWith('ja')) return 'ja';
             if (browserLang.startsWith('en')) return 'en';
             
-            return 'en'; // fallback to English
+            return 'en';
         }
 
         currentLang = detectLanguage();
 
-        // Translations
         const translations = {
             'kk': {
                 btnHome: 'Жоба туралы',
@@ -574,10 +569,7 @@
                 btnFeedback: '💬 Пікір жазу',
                 btnNewWord: '📝 Жаңа сөз ұсыну',
                 footerContact: 'Байланыс',
-                
-                // Form: New Word
                 formTitleNewWord: 'Жаңа сөз ұсыну',
-                formTitleNewWordSecondary: '',
                 formIntroNewWord: 'Сөздікте жоқ сөзді таптыңыз ба? Немесе аудармада қате байқадыңыз ба? Сіздің ұсынысыңызды қуана қабылдаймыз!',
                 rulesTitle: 'Сөздік ережелері:',
                 rule1: '• Әр сөз табы үшін 5-тен артық негізгі мағына жоқ',
@@ -595,10 +587,7 @@
                 btnSubmitting: 'Жіберілуде...',
                 successMessage: '✅ Рахмет! Біз сіздің хабарламаңызды алдық.',
                 errorMessage: '⚠️ Қате. Кейінірек қайталап көріңіз.',
-                
-                // Form: Bug Report
                 formTitleBug: 'Ақаулық туралы хабарлау',
-                formTitleBugSecondary: '',
                 formIntroBug: 'Техникалық мәселелерді сипаттаңыз.',
                 labelBugDescription: 'Мәселе сипаттамасы',
                 placeholderBugDescription: 'Не болды?',
@@ -607,10 +596,7 @@
                 labelScreenshot: 'Скриншот қосу (міндетті емес)',
                 screenshotHelper: 'PNG, JPG немесе WEBP, 5 МБ дейін',
                 screenshotButtonText: 'Файл таңдау',
-                
-                // Form: Feedback
                 formTitleFeedback: 'Пікір жазу',
-                formTitleFeedbackSecondary: '',
                 formIntroFeedback: 'Сіздің ойларыңызды бөлісіңіз!',
                 labelFeedback: 'Сіздің хабарламаңыз',
                 placeholderFeedback: 'Сіздің пікіріңіз, ұсыныстарыңыз немесе алғыс сөздеріңіз...',
@@ -622,10 +608,7 @@
                 btnFeedback: '💬 Написать отзыв',
                 btnNewWord: '📝 Предложить слово',
                 footerContact: 'Контакты',
-                
-                // Form: New Word
                 formTitleNewWord: 'Предложить новое слово',
-                formTitleNewWordSecondary: '',
                 formIntroNewWord: 'Нашли слово, которого нет в словаре? Или заметили ошибку в переводе? Будем рады вашему предложению!',
                 rulesTitle: 'Правила словаря:',
                 rule1: '• Не больше 5 основных значений для каждой части речи',
@@ -643,10 +626,7 @@
                 btnSubmitting: 'Отправка...',
                 successMessage: '✅ Спасибо! Мы получили ваше сообщение.',
                 errorMessage: '⚠️ Ошибка при отправке. Попробуйте позже.',
-                
-                // Form: Bug Report
                 formTitleBug: 'Сообщить о технической проблеме',
-                formTitleBugSecondary: '',
                 formIntroBug: 'Опишите техническую проблему, с которой вы столкнулись.',
                 labelBugDescription: 'Описание проблемы',
                 placeholderBugDescription: 'Что произошло?',
@@ -655,10 +635,7 @@
                 labelScreenshot: 'Прикрепить скриншот (необязательно)',
                 screenshotHelper: 'PNG, JPG или WEBP, до 5 МБ',
                 screenshotButtonText: 'Выбрать файл',
-                
-                // Form: Feedback
                 formTitleFeedback: 'Написать отзыв',
-                formTitleFeedbackSecondary: '',
                 formIntroFeedback: 'Поделитесь своими мыслями о проекте!',
                 labelFeedback: 'Ваше сообщение',
                 placeholderFeedback: 'Ваш отзыв, предложения или слова благодарности...',
@@ -670,9 +647,7 @@
                 btnFeedback: '💬 Write Feedback',
                 btnNewWord: '📝 Suggest a Word',
                 footerContact: 'Contact',
-                
                 formTitleNewWord: 'Suggest a New Word',
-                formTitleNewWordSecondary: '',
                 formIntroNewWord: 'Found a word that\'s missing? Spotted a translation error? We\'d love your suggestion!',
                 rulesTitle: 'Dictionary rules:',
                 rule1: '• No more than 5 core meanings per part of speech',
@@ -690,9 +665,7 @@
                 btnSubmitting: 'Sending...',
                 successMessage: '✅ Thank you! We received your message.',
                 errorMessage: '⚠️ Error sending. Please try again later.',
-                
                 formTitleBug: 'Report a Bug',
-                formTitleBugSecondary: '',
                 formIntroBug: 'Describe the technical issue you encountered.',
                 labelBugDescription: 'Problem Description',
                 placeholderBugDescription: 'What happened?',
@@ -701,14 +674,11 @@
                 labelScreenshot: 'Attach Screenshot (optional)',
                 screenshotHelper: 'PNG, JPG or WEBP, up to 5 MB',
                 screenshotButtonText: 'Choose file',
-                
                 formTitleFeedback: 'Write Feedback',
-                formTitleFeedbackSecondary: '',
                 formIntroFeedback: 'Share your thoughts about the project!',
                 labelFeedback: 'Your Message',
                 placeholderFeedback: 'Your feedback, suggestions, or words of appreciation...',
             },
-            // Исправлено: ключ объекта теперь 'ja' (был 'jp')
             'ja': {
                 btnHome: 'プロジェクトについて',
                 switcherTitle: 'または別のタイプを選択:',
@@ -716,9 +686,7 @@
                 btnFeedback: '💬 フィードバックを書く',
                 btnNewWord: '📝 単語を提案',
                 footerContact: '連絡先',
-                
                 formTitleNewWord: '新しい単語を提案',
-                formTitleNewWordSecondary: '',
                 formIntroNewWord: '辞書にない単語を見つけましたか？翻訳の誤りに気づきましたか？ご提案をお待ちしています！',
                 rulesTitle: '辞書のルール:',
                 rule1: '• 品詞ごとに5つまでの基本的な意味',
@@ -736,9 +704,7 @@
                 btnSubmitting: '送信中...',
                 successMessage: '✅ ありがとうございます！メッセージを受け取りました。',
                 errorMessage: '⚠️ 送信エラー。後でもう一度お試しください。',
-                
                 formTitleBug: 'バグを報告',
-                formTitleBugSecondary: '',
                 formIntroBug: '発生した技術的な問題を説明してください。',
                 labelBugDescription: '問題の説明',
                 placeholderBugDescription: '何が起こりましたか？',
@@ -747,47 +713,36 @@
                 labelScreenshot: 'スクリーンショットを添付（任意）',
                 screenshotHelper: 'PNG、JPGまたはWEBP、最大5 MB',
                 screenshotButtonText: 'ファイルを選択',
-                
                 formTitleFeedback: 'フィードバックを書く',
-                formTitleFeedbackSecondary: '',
                 formIntroFeedback: 'プロジェクトについてのご意見をお聞かせください！',
                 labelFeedback: 'メッセージ',
                 placeholderFeedback: 'フィードバック、提案、感謝の言葉...',
             }
         };
 
-        // Update UI text
         function updateLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('qazrikai_lang', lang);
-            
             const t = translations[lang];
             
-            // Update page elements
             document.getElementById('btnHome').textContent = t.btnHome;
             document.getElementById('footerContact').textContent = t.footerContact;
-            
-            // Re-render current form (will update all form content and buttons)
             renderForm(currentFormType);
         }
 
-        // Language switcher
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const lang = this.dataset.lang;
-                
                 document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                
                 updateLanguage(lang);
             });
         });
 
-        // Set initial active language button
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelector(`[data-lang="${currentLang}"]`)?.classList.add('active');
 
-        // Form rendering
+        // === FORM RENDERING ===
         let currentFormType = 'new_word';
 
         function renderForm(type) {
@@ -799,182 +754,91 @@
             
             if (type === 'new_word') {
                 html = `
-                    <h2 class="form-title">
-                        ${t.formTitleNewWord}
-                        ${t.formTitleNewWordSecondary ? `<span class="form-title-secondary">${t.formTitleNewWordSecondary}</span>` : ''}
-                    </h2>
+                    <h2 class="form-title">${t.formTitleNewWord}</h2>
                     <p class="form-intro">${t.formIntroNewWord}</p>
-                    
                     <div class="dictionary-rules">
                         <div class="rules-title">${t.rulesTitle}</div>
                         <div class="rule-item">${t.rule1}</div>
                         <div class="rule-item">${t.rule2}</div>
                         <div class="rule-item">${t.rule3}</div>
                     </div>
-                    
                     <form id="mainForm">
                         <input type="hidden" name="type" value="new_word">
                         <input type="hidden" name="lang" value="kk">
-                        
-                        <div class="form-group">
-                            <label>${t.labelWord}</label>
-                            <input type="text" name="content_main" placeholder="${t.placeholderWord}" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>${t.labelTranslation}</label>
-                            <input type="text" name="content_sub" placeholder="${t.placeholderTranslation}">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>${t.labelComment}</label>
-                            <textarea name="extra" placeholder="${t.placeholderComment}"></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>${t.labelEmail}</label>
-                            <input type="email" name="email" placeholder="${t.placeholderEmail}">
-                        </div>
-                        
+                        <div class="form-group"><label>${t.labelWord}</label><input type="text" name="content_main" placeholder="${t.placeholderWord}" required></div>
+                        <div class="form-group"><label>${t.labelTranslation}</label><input type="text" name="content_sub" placeholder="${t.placeholderTranslation}"></div>
+                        <div class="form-group"><label>${t.labelComment}</label><textarea name="extra" placeholder="${t.placeholderComment}"></textarea></div>
+                        <div class="form-group"><label>${t.labelEmail}</label><input type="email" name="email" placeholder="${t.placeholderEmail}"></div>
                         <button type="submit" class="submit-btn">${t.btnSubmit}</button>
                         <div id="statusMessage" class="status-msg"></div>
-                    </form>
-                `;
+                    </form>`;
             } else if (type === 'bug') {
                 html = `
-                    <h2 class="form-title">
-                        ${t.formTitleBug}
-                        ${t.formTitleBugSecondary ? `<span class="form-title-secondary">${t.formTitleBugSecondary}</span>` : ''}
-                    </h2>
+                    <h2 class="form-title">${t.formTitleBug}</h2>
                     <p class="form-intro">${t.formIntroBug}</p>
-                    
                     <form id="mainForm">
                         <input type="hidden" name="type" value="bug">
                         <input type="hidden" name="lang" value="kk">
-                        
-                        <div class="form-group">
-                            <label>${t.labelBugDescription}</label>
-                            <textarea name="content_main" placeholder="${t.placeholderBugDescription}" required></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>${t.labelBrowser}</label>
-                            <input type="text" name="content_sub" placeholder="${t.placeholderBrowser}">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>${t.labelScreenshot}</label>
-                            <div class="file-upload-wrapper">
-                                <input type="file" 
-                                       id="screenshotInput" 
-                                       class="file-upload-input" 
-                                       accept="image/png,image/jpeg,image/jpg,image/webp">
-                                <label for="screenshotInput" class="file-upload-label">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <span id="uploadText">${t.screenshotButtonText}</span>
-                                </label>
-                                <div class="file-helper">${t.screenshotHelper}</div>
-                                <div class="file-preview" id="filePreview">
-                                    <i class="fas fa-image" style="color: var(--primary);"></i>
-                                    <span class="file-preview-info" id="fileName"></span>
-                                    <button type="button" class="file-remove-btn" id="removeFile">✕</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>${t.labelEmail}</label>
-                            <input type="email" name="email" placeholder="${t.placeholderEmail}">
-                        </div>
-                        
+                        <div class="form-group"><label>${t.labelBugDescription}</label><textarea name="content_main" placeholder="${t.placeholderBugDescription}" required></textarea></div>
+                        <div class="form-group"><label>${t.labelBrowser}</label><input type="text" name="content_sub" placeholder="${t.placeholderBrowser}"></div>
+                        <div class="form-group"><label>${t.labelScreenshot}</label><div class="file-upload-wrapper"><input type="file" id="screenshotInput" class="file-upload-input" accept="image/png,image/jpeg,image/jpg,image/webp"><label for="screenshotInput" class="file-upload-label"><i class="fas fa-cloud-upload-alt"></i><span id="uploadText">${t.screenshotButtonText}</span></label><div class="file-helper">${t.screenshotHelper}</div><div class="file-preview" id="filePreview"><i class="fas fa-image" style="color: var(--primary);"></i><span class="file-preview-info" id="fileName"></span><button type="button" class="file-remove-btn" id="removeFile">✕</button></div></div></div>
+                        <div class="form-group"><label>${t.labelEmail}</label><input type="email" name="email" placeholder="${t.placeholderEmail}"></div>
                         <button type="submit" class="submit-btn">${t.btnSubmit}</button>
                         <div id="statusMessage" class="status-msg"></div>
-                    </form>
-                `;
+                    </form>`;
             } else if (type === 'feedback') {
                 html = `
-                    <h2 class="form-title">
-                        ${t.formTitleFeedback}
-                        ${t.formTitleFeedbackSecondary ? `<span class="form-title-secondary">${t.formTitleFeedbackSecondary}</span>` : ''}
-                    </h2>
+                    <h2 class="form-title">${t.formTitleFeedback}</h2>
                     <p class="form-intro">${t.formIntroFeedback}</p>
-                    
                     <form id="mainForm">
                         <input type="hidden" name="type" value="feedback">
                         <input type="hidden" name="lang" value="kk">
-                        
-                        <div class="form-group">
-                            <label>${t.labelFeedback}</label>
-                            <textarea name="content_main" placeholder="${t.placeholderFeedback}" required style="height: 150px;"></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>${t.labelEmail}</label>
-                            <input type="email" name="email" placeholder="${t.placeholderEmail}">
-                        </div>
-                        
+                        <div class="form-group"><label>${t.labelFeedback}</label><textarea name="content_main" placeholder="${t.placeholderFeedback}" required style="height: 150px;"></textarea></div>
+                        <div class="form-group"><label>${t.labelEmail}</label><input type="email" name="email" placeholder="${t.placeholderEmail}"></div>
                         <button type="submit" class="submit-btn">${t.btnSubmit}</button>
                         <div id="statusMessage" class="status-msg"></div>
-                    </form>
-                `;
+                    </form>`;
             }
-            
+
             formContent.innerHTML = html;
             formContent.classList.add('fade-transition');
-            
-            // Update switcher - show buttons for other two form types
+
             const switcher = document.getElementById('formSwitcher');
             const switcherTitle = document.getElementById('switcherTitle');
             const typeButtons = document.querySelector('.type-buttons');
             
             switcherTitle.textContent = t.switcherTitle;
             
-            // Build buttons for the other two types
             let buttonsHTML = '';
             if (type === 'new_word') {
-                buttonsHTML = `
-                    <button class="type-btn" data-type="bug">${t.btnBug}</button>
-                    <button class="type-btn" data-type="feedback">${t.btnFeedback}</button>
-                `;
+                buttonsHTML = `<button class="type-btn" data-type="bug">${t.btnBug}</button><button class="type-btn" data-type="feedback">${t.btnFeedback}</button>`;
             } else if (type === 'bug') {
-                buttonsHTML = `
-                    <button class="type-btn" data-type="new_word">${t.btnNewWord}</button>
-                    <button class="type-btn" data-type="feedback">${t.btnFeedback}</button>
-                `;
+                buttonsHTML = `<button class="type-btn" data-type="new_word">${t.btnNewWord}</button><button class="type-btn" data-type="feedback">${t.btnFeedback}</button>`;
             } else if (type === 'feedback') {
-                buttonsHTML = `
-                    <button class="type-btn" data-type="new_word">${t.btnNewWord}</button>
-                    <button class="type-btn" data-type="bug">${t.btnBug}</button>
-                `;
+                buttonsHTML = `<button class="type-btn" data-type="new_word">${t.btnNewWord}</button><button class="type-btn" data-type="bug">${t.btnBug}</button>`;
             }
             
             typeButtons.innerHTML = buttonsHTML;
             switcher.style.display = 'block';
             
-            // Re-attach click handlers for new buttons
             document.querySelectorAll('.type-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const newType = this.dataset.type;
                     renderForm(newType);
-                    document.querySelector('.form-container').scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
+                    document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
             });
             
-            // Attach form handler
             setTimeout(() => attachFormHandler(), 100);
         }
 
-        // Form submission handler
+        // === FORM HANDLER ===
         function attachFormHandler() {
             const form = document.getElementById('mainForm');
             const statusMsg = document.getElementById('statusMessage');
             
             if (!form) return;
             
-            // Handle screenshot upload if present
             const screenshotInput = document.getElementById('screenshotInput');
             let screenshotData = null;
             
@@ -986,30 +850,23 @@
                 screenshotInput.addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (!file) return;
-                    
-                    // Check file size (5 MB max)
                     if (file.size > 5 * 1024 * 1024) {
                         alert('File too large. Maximum size is 5 MB.');
                         this.value = '';
                         return;
                     }
-                    
-                    // Show preview
                     fileName.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
                     filePreview.classList.add('show');
-                    
-                    // Convert to base64
                     const reader = new FileReader();
                     reader.onload = function(event) {
                         screenshotData = {
                             name: file.name,
                             mimeType: file.type,
-                            data: event.target.result.split(',')[1] // Remove data:image/...;base64, prefix
+                            data: event.target.result.split(',')[1]
                         };
                     };
                     reader.readAsDataURL(file);
                 });
-                
                 if (removeBtn) {
                     removeBtn.addEventListener('click', function() {
                         screenshotInput.value = '';
@@ -1021,7 +878,6 @@
             
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
                 const t = translations[currentLang];
                 const btn = form.querySelector('.submit-btn');
                 const originalText = btn.textContent;
@@ -1031,11 +887,7 @@
                 const formData = new FormData(form);
                 const data = {};
                 formData.forEach((value, key) => data[key] = value);
-                
-                // Add screenshot data if present
-                if (screenshotData) {
-                    data.screenshot = screenshotData;
-                }
+                if (screenshotData) data.screenshot = screenshotData;
                 
                 fetch(SCRIPT_URL, {
                     method: 'POST',
@@ -1049,9 +901,7 @@
                         statusMsg.className = 'status-msg success';
                         form.reset();
                         screenshotData = null;
-                        if (document.getElementById('filePreview')) {
-                            document.getElementById('filePreview').classList.remove('show');
-                        }
+                        if (document.getElementById('filePreview')) document.getElementById('filePreview').classList.remove('show');
                     } else {
                         throw new Error(result.error);
                     }
@@ -1068,9 +918,29 @@
             });
         }
 
-        // Initialize
+        // === SCROLL REVEAL FOOTER LOGIC ===
+        function checkFooter() {
+            const footer = document.querySelector('footer');
+            const scrollPosition = window.scrollY + window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            // Если до низа страницы осталось меньше 10 пикселей (или страница короткая)
+            if (scrollPosition >= documentHeight - 10) {
+                footer.classList.add('visible');
+            } else {
+                footer.classList.remove('visible');
+            }
+        }
+
+        window.addEventListener('scroll', checkFooter);
+        window.addEventListener('resize', checkFooter);
+        
+        // Init
         updateLanguage(currentLang);
         renderForm('new_word');
+        // Проверяем футер при загрузке (вдруг страница короткая)
+        setTimeout(checkFooter, 500); 
+
     </script>
 </body>
 </html>
