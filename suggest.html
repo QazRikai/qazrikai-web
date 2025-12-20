@@ -493,7 +493,7 @@
                     <button class="lang-btn active" data-lang="kk">KZ</button>
                     <button class="lang-btn" data-lang="ru">RU</button>
                     <button class="lang-btn" data-lang="en">EN</button>
-                    <button class="lang-btn" data-lang="jp">JP</button>
+                    <button class="lang-btn" data-lang="ja">JP</button>
                 </div>
                 <a href="index.html" class="btn-home" id="btnHome">О проекте</a>
             </div>
@@ -501,11 +501,9 @@
     </header>
 
     <div class="main-container">
-        <!-- FORM SECTION -->
         <div class="form-container">
             <div id="formContent">
-                <!-- Dynamic content will be inserted here -->
-            </div>
+                </div>
 
             <div class="form-type-switcher" id="formSwitcher">
                 <p class="switcher-title" id="switcherTitle">Немесе басқа түрді таңдаңыз / Или выберите другой тип обращения:</p>
@@ -544,19 +542,22 @@
             const urlParams = new URLSearchParams(window.location.search);
             const urlLang = urlParams.get('lang');
             
-            if (urlLang && ['kk', 'ru', 'en', 'jp'].includes(urlLang)) {
+            // Исправлено: добавлена поддержка 'ja', убрана 'jp'
+            if (urlLang && ['kk', 'ru', 'en', 'ja'].includes(urlLang)) {
                 return urlLang;
             }
             
             const savedLang = localStorage.getItem('qazrikai_lang');
-            if (savedLang && ['kk', 'ru', 'en', 'jp'].includes(savedLang)) {
+            // Исправлено: проверка сохраненного языка тоже на 'ja'
+            if (savedLang && ['kk', 'ru', 'en', 'ja'].includes(savedLang)) {
                 return savedLang;
             }
             
             const browserLang = navigator.language.toLowerCase();
             if (browserLang.startsWith('kk') || browserLang.startsWith('kz')) return 'kk';
             if (browserLang.startsWith('ru')) return 'ru';
-            if (browserLang.startsWith('ja')) return 'jp';
+            // Исправлено: браузер отдает 'ja', возвращаем 'ja'
+            if (browserLang.startsWith('ja')) return 'ja';
             if (browserLang.startsWith('en')) return 'en';
             
             return 'en'; // fallback to English
@@ -707,7 +708,8 @@
                 labelFeedback: 'Your Message',
                 placeholderFeedback: 'Your feedback, suggestions, or words of appreciation...',
             },
-            'jp': {
+            // Исправлено: ключ объекта теперь 'ja' (был 'jp')
+            'ja': {
                 btnHome: 'プロジェクトについて',
                 switcherTitle: 'または別のタイプを選択:',
                 btnBug: '🐛 バグを報告',
