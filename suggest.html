@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QazRikai — Предложить слово</title>
+    <meta name="description" content="Предложи новое слово или сообщи об ошибке">
+    <link rel="icon" type="image/png" href="icon128.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #008DAD;
+            --accent: #F6C400;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            background: linear-gradient(180deg, var(--light) 0%, white 50%);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 141, 173, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 141, 173, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo img {
+            height: 45px;
+            filter: drop-shadow(0 2px 8px rgba(0, 141, 173, 0.2));
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 8px;
+            background: white;
+            padding: 8px;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(0, 141, 173, 0.1);
+        }
+
+        .btn-home {
+            padding: 10px 24px;
+            background: var(--accent);
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(246, 196, 0, 0.3);
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .main-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 30px 40px;
+        }
+
+        /* --- FORM SECTION --- */
+        .form-container {
+            background: white;
+            padding: 35px;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(0, 141, 173, 0.1);
+            border: 2px solid rgba(0, 141, 173, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .form-title-secondary {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-top: 4px;
+        }
+
+        .form-intro {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .dictionary-rules {
+            background: rgba(0, 141, 173, 0.05);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .rules-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .rule-item {
+            color: var(--dark);
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .rule-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--light);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 141, 173, 0.1);
+            background: white;
+        }
+
+        .form-group textarea {
+            height: 85px;
+            resize: vertical;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+        }
+
+        .file-upload-input {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            background: var(--light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 400 !important;
+            color: #9ca3af !important;
+            margin-bottom: 0 !important;
+        }
+
+        .file-upload-label:hover {
+            background: rgba(0, 141, 173, 0.05);
+            border-color: #006b87;
+        }
+
+        .file-upload-label i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .file-helper {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        .file-preview {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0, 141, 173, 0.05);
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-preview.show {
+            display: flex;
+        }
+
+        .file-preview-info {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .file-remove-btn {
+            padding: 6px 12px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+        }
+
+        .file-remove-btn:hover {
+            background: #dc2626;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), #006b87);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 141, 173, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 141, 173, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-msg {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .status-msg.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status-msg.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        /* --- FORM TYPE SWITCHER --- */
+        .form-type-switcher {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(0, 141, 173, 0.1);
+        }
+
+        .switcher-title {
+            color: var(--text-light);
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .type-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .type-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .type-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--dark);
+            color: #a0aec0;
+            padding: 30px 30px 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .footer-links {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-links .github-link {
+            color: #a0aec0;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .footer-links .github-link:hover {
+            opacity: 1;
+        }
+
+        .footer-copyright {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 10px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 20px 40px;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .title-secondary {
+                font-size: 1.5rem;
+            }
+
+            .search-box,
+            .form-container {
+                padding: 24px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .type-buttons {
+                flex-direction: column;
+            }
+
+            .type-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .fade-transition {
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="icon128.png" alt="QazRikai Logo">
+                <span>QazRikai</span>
+            </a>
+            <div class="header-actions">
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="kk">KZ</button>
+                    <button class="lang-btn" data-lang="ru">RU</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="jp">JP</button>
+                </div>
+                <a href="index.html" class="btn-home" id="btnHome">О проекте</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- FORM SECTION -->
+        <div class="form-container">
+            <div id="formContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+
+            <div class="form-type-switcher" id="formSwitcher">
+                <p class="switcher-title" id="switcherTitle">Немесе басқа түрді таңдаңыз / Или выберите другой тип обращения:</p>
+                <div class="type-buttons">
+                    <button class="type-btn" data-type="bug">
+                        <i class="fas fa-bug"></i>
+                        <span id="btnBug">🐛 Ақаулық туралы хабарлау / Сообщить о баге</span>
+                    </button>
+                    <button class="type-btn" data-type="feedback">
+                        <i class="fas fa-comment"></i>
+                        <span id="btnFeedback">💬 Пікір жазу / Написать отзыв</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="mailto:support@qazrikai.com"><i class="fas fa-envelope"></i> <span id="footerContact">Байланыс / Контакты</span></a>
+            <a href="https://www.buymeacoffee.com/qazrikai" target="_blank"><i class="fas fa-coffee"></i> Donate</a>
+            <a href="https://github.com/QazRikai" target="_blank" class="github-link"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+        <p class="footer-copyright">&copy; 2025 QazRikai</p>
+    </footer>
+
+    <script>
+        // Load dictionary - removed as search is not needed
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynUXqWxMo8Y39Iq3ijsKd99QjWy6aZh2VpN7HyK7NPzPPT8mzZFHlAQhygrQv4NqCN/exec';
+
+        // Language detection and management
+        let currentLang = 'en'; // default to English
+
+        // Detect language from URL or browser
+        function detectLanguage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlLang = urlParams.get('lang');
+            
+            if (urlLang && ['kk', 'ru', 'en', 'jp'].includes(urlLang)) {
+                return urlLang;
+            }
+            
+            const savedLang = localStorage.getItem('qazrikai_lang');
+            if (savedLang && ['kk', 'ru', 'en', 'jp'].includes(savedLang)) {
+                return savedLang;
+            }
+            
+            const browserLang = navigator.language.toLowerCase();
+            if (browserLang.startsWith('kk') || browserLang.startsWith('kz')) return 'kk';
+            if (browserLang.startsWith('ru')) return 'ru';
+            if (browserLang.startsWith('ja')) return 'jp';
+            if (browserLang.startsWith('en')) return 'en';
+            
+            return 'en'; // fallback to English
+        }
+
+        currentLang = detectLanguage();
+
+        // Translations
+        const translations = {
+            'kk': {
+                btnHome: 'Жоба туралы',
+                switcherTitle: 'Немесе басқа түрді таңдаңыз:',
+                btnBug: '🐛 Ақаулық туралы хабарлау',
+                btnFeedback: '💬 Пікір жазу',
+                footerContact: 'Байланыс',
+                
+                // Form: New Word
+                formTitleNewWord: 'Жаңа сөз ұсыну',
+                formTitleNewWordSecondary: '',
+                formIntroNewWord: 'Сөздікте жоқ сөзді таптыңыз ба? Немесе аудармада қате байқадыңыз ба? Сіздің ұсынысыңызды қуана қабылдаймыз!',
+                rulesTitle: 'Сөздік ережелері:',
+                rule1: '• Әр сөз табы үшін 5-тен артық негізгі мағына жоқ',
+                rule2: '• Тек негізгі мағына — ауыспалы немесе ескірген мағыналарсыз',
+                rule3: '• Аударма барынша ықшам',
+                labelWord: 'Қазақ сөзі',
+                placeholderWord: 'Мысалы: Сәлем',
+                labelTranslation: 'Аударма (RU/EN/JP)',
+                placeholderTranslation: 'Мысалы: Привет / Hello / こんにちは',
+                labelComment: 'Пікір (міндетті емес)',
+                placeholderComment: 'Қосымша ақпарат, қолдану мысалы...',
+                labelEmail: 'Email (міндетті емес)',
+                placeholderEmail: 'name@example.com',
+                btnSubmit: 'Жіберу 🚀',
+                btnSubmitting: 'Жіберілуде...',
+                successMessage: '✅ Рахмет! Біз сіздің хабарламаңызды алдық.',
+                errorMessage: '⚠️ Қате. Кейінірек қайталап көріңіз.',
+                
+                // Form: Bug Report
+                formTitleBug: 'Ақаулық туралы хабарлау',
+                formTitleBugSecondary: '',
+                formIntroBug: 'Техникалық мәселелерді сипаттаңыз.',
+                labelBugDescription: 'Мәселе сипаттамасы',
+                placeholderBugDescription: 'Не болды?',
+                labelBrowser: 'Браузер және нұсқасы',
+                placeholderBrowser: 'Мысалы: Chrome 120, Firefox 121',
+                labelScreenshot: 'Скриншот қосу (міндетті емес)',
+                screenshotHelper: 'PNG, JPG немесе WEBP, 5 МБ дейін',
+                screenshotButtonText: 'Файл таңдау',
+                
+                // Form: Feedback
+                formTitleFeedback: 'Пікір жазу',
+                formTitleFeedbackSecondary: '',
+                formIntroFeedback: 'Сіздің ойларыңызды бөлісіңіз!',
+                labelFeedback: 'Сіздің хабарламаңыз',
+                placeholderFeedback: 'Сіздің пікіріңіз, ұсыныстарыңыз немесе алғыс сөздеріңіз...',
+            },
+            'ru': {
+                btnHome: 'О проекте',
+                switcherTitle: 'Или выберите другой тип обращения:',
+                btnBug: '🐛 Сообщить о баге',
+                btnFeedback: '💬 Написать отзыв',
+                footerContact: 'Контакты',
+                
+                // Form: New Word
+                formTitleNewWord: 'Предложить новое слово',
+                formTitleNewWordSecondary: '',
+                formIntroNewWord: 'Нашли слово, которого нет в словаре? Или заметили ошибку в переводе? Будем рады вашему предложению!',
+                rulesTitle: 'Правила словаря:',
+                rule1: '• Не больше 5 основных значений для каждой части речи',
+                rule2: '• Только базовый смысл — без переносных или архаичных значений',
+                rule3: '• Перевод максимально компактный',
+                labelWord: 'Казахское слово',
+                placeholderWord: 'Например: Сәлем',
+                labelTranslation: 'Перевод (RU/EN/JP)',
+                placeholderTranslation: 'Например: Привет / Hello / こんにちは',
+                labelComment: 'Комментарий (необязательно)',
+                placeholderComment: 'Дополнительная информация, пример использования...',
+                labelEmail: 'Email (необязательно)',
+                placeholderEmail: 'name@example.com',
+                btnSubmit: 'Отправить 🚀',
+                btnSubmitting: 'Отправка...',
+                successMessage: '✅ Спасибо! Мы получили ваше сообщение.',
+                errorMessage: '⚠️ Ошибка при отправке. Попробуйте позже.',
+                
+                // Form: Bug Report
+                formTitleBug: 'Сообщить о технической проблеме',
+                formTitleBugSecondary: '',
+                formIntroBug: 'Опишите техническую проблему, с которой вы столкнулись.',
+                labelBugDescription: 'Описание проблемы',
+                placeholderBugDescription: 'Что произошло?',
+                labelBrowser: 'Браузер и версия',
+                placeholderBrowser: 'Например: Chrome 120, Firefox 121',
+                labelScreenshot: 'Прикрепить скриншот (необязательно)',
+                screenshotHelper: 'PNG, JPG или WEBP, до 5 МБ',
+                screenshotButtonText: 'Выбрать файл',
+                
+                // Form: Feedback
+                formTitleFeedback: 'Написать отзыв',
+                formTitleFeedbackSecondary: '',
+                formIntroFeedback: 'Поделитесь своими мыслями о проекте!',
+                labelFeedback: 'Ваше сообщение',
+                placeholderFeedback: 'Ваш отзыв, предложения или слова благодарности...',
+            },
+            'en': {
+                btnHome: 'About Project',
+                switcherTitle: 'Or choose another type:',
+                btnBug: '🐛 Report a Bug',
+                btnFeedback: '💬 Write Feedback',
+                footerContact: 'Contact',
+                
+                formTitleNewWord: 'Suggest a New Word',
+                formTitleNewWordSecondary: '',
+                formIntroNewWord: 'Found a word that\'s missing? Spotted a translation error? We\'d love your suggestion!',
+                rulesTitle: 'Dictionary rules:',
+                rule1: '• No more than 5 core meanings per part of speech',
+                rule2: '• Only basic meanings — no figurative or archaic ones',
+                rule3: '• Translations as compact as possible',
+                labelWord: 'Kazakh Word',
+                placeholderWord: 'Example: Сәлем',
+                labelTranslation: 'Translation (RU/EN/JP)',
+                placeholderTranslation: 'Example: Привет / Hello / こんにちは',
+                labelComment: 'Comment (optional)',
+                placeholderComment: 'Additional info, usage example...',
+                labelEmail: 'Email (optional)',
+                placeholderEmail: 'name@example.com',
+                btnSubmit: 'Submit 🚀',
+                btnSubmitting: 'Sending...',
+                successMessage: '✅ Thank you! We received your message.',
+                errorMessage: '⚠️ Error sending. Please try again later.',
+                
+                formTitleBug: 'Report a Bug',
+                formTitleBugSecondary: '',
+                formIntroBug: 'Describe the technical issue you encountered.',
+                labelBugDescription: 'Problem Description',
+                placeholderBugDescription: 'What happened?',
+                labelBrowser: 'Browser and Version',
+                placeholderBrowser: 'Example: Chrome 120, Firefox 121',
+                labelScreenshot: 'Attach Screenshot (optional)',
+                screenshotHelper: 'PNG, JPG or WEBP, up to 5 MB',
+                screenshotButtonText: 'Choose file',
+                
+                formTitleFeedback: 'Write Feedback',
+                formTitleFeedbackSecondary: '',
+                formIntroFeedback: 'Share your thoughts about the project!',
+                labelFeedback: 'Your Message',
+                placeholderFeedback: 'Your feedback, suggestions, or words of appreciation...',
+            },
+            'jp': {
+                btnHome: 'プロジェクトについて',
+                switcherTitle: 'または別のタイプを選択:',
+                btnBug: '🐛 バグを報告',
+                btnFeedback: '💬 フィードバックを書く',
+                footerContact: '連絡先',
+                
+                formTitleNewWord: '新しい単語を提案',
+                formTitleNewWordSecondary: '',
+                formIntroNewWord: '辞書にない単語を見つけましたか？翻訳の誤りに気づきましたか？ご提案をお待ちしています！',
+                rulesTitle: '辞書のルール:',
+                rule1: '• 品詞ごとに5つまでの基本的な意味',
+                rule2: '• 基本的な意味のみ — 比喩的または古語的な意味は含まない',
+                rule3: '• 翻訳はできるだけコンパクトに',
+                labelWord: 'カザフ語の単語',
+                placeholderWord: '例: Сәлем',
+                labelTranslation: '翻訳 (RU/EN/JP)',
+                placeholderTranslation: '例: Привет / Hello / こんにちは',
+                labelComment: 'コメント（任意）',
+                placeholderComment: '追加情報、使用例...',
+                labelEmail: 'メール（任意）',
+                placeholderEmail: 'name@example.com',
+                btnSubmit: '送信 🚀',
+                btnSubmitting: '送信中...',
+                successMessage: '✅ ありがとうございます！メッセージを受け取りました。',
+                errorMessage: '⚠️ 送信エラー。後でもう一度お試しください。',
+                
+                formTitleBug: 'バグを報告',
+                formTitleBugSecondary: '',
+                formIntroBug: '発生した技術的な問題を説明してください。',
+                labelBugDescription: '問題の説明',
+                placeholderBugDescription: '何が起こりましたか？',
+                labelBrowser: 'ブラウザとバージョン',
+                placeholderBrowser: '例: Chrome 120, Firefox 121',
+                labelScreenshot: 'スクリーンショットを添付（任意）',
+                screenshotHelper: 'PNG、JPGまたはWEBP、最大5 MB',
+                screenshotButtonText: 'ファイルを選択',
+                
+                formTitleFeedback: 'フィードバックを書く',
+                formTitleFeedbackSecondary: '',
+                formIntroFeedback: 'プロジェクトについてのご意見をお聞かせください！',
+                labelFeedback: 'メッセージ',
+                placeholderFeedback: 'フィードバック、提案、感謝の言葉...',
+            }
+        };
+
+        // Update UI text
+        function updateLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('qazrikai_lang', lang);
+            
+            const t = translations[lang];
+            
+            // Update page elements
+            document.getElementById('btnHome').textContent = t.btnHome;
+            document.getElementById('switcherTitle').textContent = t.switcherTitle;
+            document.getElementById('btnBug').textContent = t.btnBug;
+            document.getElementById('btnFeedback').textContent = t.btnFeedback;
+            document.getElementById('footerContact').textContent = t.footerContact;
+            
+            // Re-render current form
+            renderForm(currentFormType);
+        }
+
+        // Language switcher
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.dataset.lang;
+                
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                updateLanguage(lang);
+            });
+        });
+
+        // Set initial active language button
+        document.querySelector(`[data-lang="${currentLang}"]`)?.classList.add('active');
+
+        // Form rendering
+        let currentFormType = 'new_word';
+
+        function renderForm(type) {
+            currentFormType = type;
+            const t = translations[currentLang];
+            const formContent = document.getElementById('formContent');
+            
+            let html = '';
+            
+            if (type === 'new_word') {
+                html = `
+                    <h2 class="form-title">
+                        ${t.formTitleNewWord}
+                        ${t.formTitleNewWordSecondary ? `<span class="form-title-secondary">${t.formTitleNewWordSecondary}</span>` : ''}
+                    </h2>
+                    <p class="form-intro">${t.formIntroNewWord}</p>
+                    
+                    <div class="dictionary-rules">
+                        <div class="rules-title">${t.rulesTitle}</div>
+                        <div class="rule-item">${t.rule1}</div>
+                        <div class="rule-item">${t.rule2}</div>
+                        <div class="rule-item">${t.rule3}</div>
+                    </div>
+                    
+                    <form id="mainForm">
+                        <input type="hidden" name="type" value="new_word">
+                        <input type="hidden" name="lang" value="kk">
+                        
+                        <div class="form-group">
+                            <label>${t.labelWord}</label>
+                            <input type="text" name="content_main" placeholder="${t.placeholderWord}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>${t.labelTranslation}</label>
+                            <input type="text" name="content_sub" placeholder="${t.placeholderTranslation}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>${t.labelComment}</label>
+                            <textarea name="extra" placeholder="${t.placeholderComment}"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>${t.labelEmail}</label>
+                            <input type="email" name="email" placeholder="${t.placeholderEmail}">
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">${t.btnSubmit}</button>
+                        <div id="statusMessage" class="status-msg"></div>
+                    </form>
+                `;
+            } else if (type === 'bug') {
+                html = `
+                    <h2 class="form-title">
+                        ${t.formTitleBug}
+                        ${t.formTitleBugSecondary ? `<span class="form-title-secondary">${t.formTitleBugSecondary}</span>` : ''}
+                    </h2>
+                    <p class="form-intro">${t.formIntroBug}</p>
+                    
+                    <form id="mainForm">
+                        <input type="hidden" name="type" value="bug">
+                        <input type="hidden" name="lang" value="kk">
+                        
+                        <div class="form-group">
+                            <label>${t.labelBugDescription}</label>
+                            <textarea name="content_main" placeholder="${t.placeholderBugDescription}" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>${t.labelBrowser}</label>
+                            <input type="text" name="content_sub" placeholder="${t.placeholderBrowser}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>${t.labelScreenshot}</label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" 
+                                       id="screenshotInput" 
+                                       class="file-upload-input" 
+                                       accept="image/png,image/jpeg,image/jpg,image/webp">
+                                <label for="screenshotInput" class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span id="uploadText">${t.screenshotButtonText}</span>
+                                </label>
+                                <div class="file-helper">${t.screenshotHelper}</div>
+                                <div class="file-preview" id="filePreview">
+                                    <i class="fas fa-image" style="color: var(--primary);"></i>
+                                    <span class="file-preview-info" id="fileName"></span>
+                                    <button type="button" class="file-remove-btn" id="removeFile">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>${t.labelEmail}</label>
+                            <input type="email" name="email" placeholder="${t.placeholderEmail}">
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">${t.btnSubmit}</button>
+                        <div id="statusMessage" class="status-msg"></div>
+                    </form>
+                `;
+            } else if (type === 'feedback') {
+                html = `
+                    <h2 class="form-title">
+                        ${t.formTitleFeedback}
+                        ${t.formTitleFeedbackSecondary ? `<span class="form-title-secondary">${t.formTitleFeedbackSecondary}</span>` : ''}
+                    </h2>
+                    <p class="form-intro">${t.formIntroFeedback}</p>
+                    
+                    <form id="mainForm">
+                        <input type="hidden" name="type" value="feedback">
+                        <input type="hidden" name="lang" value="kk">
+                        
+                        <div class="form-group">
+                            <label>${t.labelFeedback}</label>
+                            <textarea name="content_main" placeholder="${t.placeholderFeedback}" required style="height: 150px;"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>${t.labelEmail}</label>
+                            <input type="email" name="email" placeholder="${t.placeholderEmail}">
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">${t.btnSubmit}</button>
+                        <div id="statusMessage" class="status-msg"></div>
+                    </form>
+                `;
+            }
+            
+            formContent.innerHTML = html;
+            formContent.classList.add('fade-transition');
+            
+            // Update switcher visibility
+            const switcher = document.getElementById('formSwitcher');
+            if (type === 'new_word') {
+                switcher.style.display = 'block';
+            } else {
+                switcher.style.display = 'none';
+            }
+            
+            // Attach form handler
+            setTimeout(() => attachFormHandler(), 100);
+        }
+
+        // Form type switcher
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const type = this.dataset.type;
+                renderForm(type);
+                
+                // Scroll to form
+                document.querySelector('.form-container').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            });
+        });
+
+        // Form submission handler
+        function attachFormHandler() {
+            const form = document.getElementById('mainForm');
+            const statusMsg = document.getElementById('statusMessage');
+            
+            if (!form) return;
+            
+            // Handle screenshot upload if present
+            const screenshotInput = document.getElementById('screenshotInput');
+            let screenshotData = null;
+            
+            if (screenshotInput) {
+                const filePreview = document.getElementById('filePreview');
+                const fileName = document.getElementById('fileName');
+                const removeBtn = document.getElementById('removeFile');
+                
+                screenshotInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    // Check file size (5 MB max)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File too large. Maximum size is 5 MB.');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    // Show preview
+                    fileName.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+                    filePreview.classList.add('show');
+                    
+                    // Convert to base64
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        screenshotData = {
+                            name: file.name,
+                            mimeType: file.type,
+                            data: event.target.result.split(',')[1] // Remove data:image/...;base64, prefix
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                });
+                
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function() {
+                        screenshotInput.value = '';
+                        screenshotData = null;
+                        filePreview.classList.remove('show');
+                    });
+                }
+            }
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const t = translations[currentLang];
+                const btn = form.querySelector('.submit-btn');
+                const originalText = btn.textContent;
+                btn.textContent = t.btnSubmitting;
+                btn.disabled = true;
+                
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => data[key] = value);
+                
+                // Add screenshot data if present
+                if (screenshotData) {
+                    data.screenshot = screenshotData;
+                }
+                
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.result === 'success') {
+                        statusMsg.textContent = t.successMessage;
+                        statusMsg.className = 'status-msg success';
+                        form.reset();
+                        screenshotData = null;
+                        if (document.getElementById('filePreview')) {
+                            document.getElementById('filePreview').classList.remove('show');
+                        }
+                    } else {
+                        throw new Error(result.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusMsg.textContent = t.errorMessage;
+                    statusMsg.className = 'status-msg error';
+                })
+                .finally(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                });
+            });
+        }
+
+        // Initialize
+        updateLanguage(currentLang);
+        renderForm('new_word');
+    </script>
+</body>
+</html>
