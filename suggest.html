@@ -781,6 +781,7 @@
         });
 
         // Set initial active language button
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelector(`[data-lang="${currentLang}"]`)?.classList.add('active');
 
         // Form rendering
