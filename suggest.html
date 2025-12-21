@@ -822,8 +822,8 @@
             
             setTimeout(() => attachFormHandler(), 100);
             
-            // Recalculate footer position after form content changes
-            setTimeout(checkFooter, 200);
+            // Reset scroll flag when form changes so footer stays hidden
+            userHasScrolled = false;
         }
 
         // === FORM HANDLER ===
