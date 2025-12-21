@@ -821,9 +821,6 @@
             });
             
             setTimeout(() => attachFormHandler(), 100);
-            
-            // Reset scroll flag when form changes so footer stays hidden
-            userHasScrolled = false;
         }
 
         // === FORM HANDLER ===
@@ -938,7 +935,13 @@
         }
 
         window.addEventListener('scroll', checkFooter);
-        window.addEventListener('resize', checkFooter);
+        
+        // On resize, just recalculate but don't auto-show footer
+        window.addEventListener('resize', () => {
+            if (userHasScrolled) {
+                checkFooter();
+            }
+        });
         
         // Init
         updateLanguage(currentLang);
