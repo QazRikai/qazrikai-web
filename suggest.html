@@ -821,6 +821,9 @@
             });
             
             setTimeout(() => attachFormHandler(), 100);
+            
+            // Recalculate footer position after form content changes
+            setTimeout(checkFooter, 200);
         }
 
         // === FORM HANDLER ===
