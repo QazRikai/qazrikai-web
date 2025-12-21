@@ -913,12 +913,24 @@
         }
 
         // === SCROLL REVEAL FOOTER LOGIC ===
+        let lastScrollY = 0;
+        let userHasScrolled = false;
+
         function checkFooter() {
             const footer = document.querySelector('footer');
+            const currentScrollY = window.scrollY;
+            
+            // Detect if user has scrolled down
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                userHasScrolled = true;
+            }
+            lastScrollY = currentScrollY;
+            
+            // Only show footer if user has scrolled AND reached bottom
             const scrollPosition = window.scrollY + window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
             
-            if (scrollPosition >= documentHeight - 10) {
+            if (userHasScrolled && scrollPosition >= documentHeight - 10) {
                 footer.classList.add('visible');
             } else {
                 footer.classList.remove('visible');
@@ -931,7 +943,7 @@
         // Init
         updateLanguage(currentLang);
         renderForm('new_word');
-        setTimeout(checkFooter, 500); 
+        // Don't check footer on initial load - let user scroll first 
 
     </script>
 </body>
