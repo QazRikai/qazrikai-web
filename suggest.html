@@ -33,6 +33,7 @@
             background: linear-gradient(180deg, var(--light) 0%, white 50%);
             line-height: 1.6;
             min-height: 100vh;
+            /* Отступ снизу, чтобы контент не перекрывался футером */
             padding-bottom: 120px; 
         }
 
@@ -821,6 +822,9 @@
             });
             
             setTimeout(() => attachFormHandler(), 100);
+            
+            // ВАЖНО: Принудительно проверяем футер после смены формы
+            setTimeout(checkFooter, 150);
         }
 
         // === FORM HANDLER ===
@@ -909,44 +913,36 @@
             });
         }
 
-        // === SCROLL REVEAL FOOTER LOGIC ===
-        let lastScrollY = 0;
-        let userHasScrolled = false;
+        // === SCROLL REVEAL FOOTER LOGIC (ИСПРАВЛЕНО) ===
 
         function checkFooter() {
             const footer = document.querySelector('footer');
-            const currentScrollY = window.scrollY;
-            
-            // Detect if user has scrolled down
-            if (currentScrollY > lastScrollY && currentScrollY > 50) {
-                userHasScrolled = true;
-            }
-            lastScrollY = currentScrollY;
-            
-            // Only show footer if user has scrolled AND reached bottom
-            const scrollPosition = window.scrollY + window.innerHeight;
+            if (!footer) return;
+
+            // Текущее положение скролла + высота окна
+            const scrollPosition = window.innerHeight + window.scrollY;
+            // Полная высота документа
             const documentHeight = document.documentElement.scrollHeight;
             
-            if (userHasScrolled && scrollPosition >= documentHeight - 10) {
+            // Если мы доскроллили до низа (с небольшим запасом в 15px)
+            // Это также сработает, если страница короткая и скролла нет
+            if (scrollPosition >= documentHeight - 15) {
                 footer.classList.add('visible');
             } else {
                 footer.classList.remove('visible');
             }
         }
 
+        // Слушаем скролл и изменение размера окна
         window.addEventListener('scroll', checkFooter);
-        
-        // On resize, just recalculate but don't auto-show footer
-        window.addEventListener('resize', () => {
-            if (userHasScrolled) {
-                checkFooter();
-            }
-        });
+        window.addEventListener('resize', checkFooter);
         
         // Init
         updateLanguage(currentLang);
         renderForm('new_word');
-        // Don't check footer on initial load - let user scroll first 
+        
+        // Принудительно проверяем футер при загрузке
+        setTimeout(checkFooter, 200);
 
     </script>
 </body>
