@@ -33,7 +33,6 @@
             background: linear-gradient(180deg, var(--light) 0%, white 50%);
             line-height: 1.6;
             min-height: 100vh;
-            /* Отступ снизу, чтобы контент не перекрывался футером */
             padding-bottom: 120px; 
         }
 
@@ -756,7 +755,7 @@
                     </div>
                     <form id="mainForm">
                         <input type="hidden" name="type" value="new_word">
-                        <input type="hidden" name="lang" value="kk">
+                        <input type="hidden" name="lang" value="${currentLang}">
                         <div class="form-group"><label>${t.labelWord}</label><input type="text" name="content_main" placeholder="${t.placeholderWord}" required></div>
                         <div class="form-group"><label>${t.labelTranslation}</label><input type="text" name="content_sub" placeholder="${t.placeholderTranslation}"></div>
                         <div class="form-group"><label>${t.labelComment}</label><textarea name="extra" placeholder="${t.placeholderComment}"></textarea></div>
@@ -770,7 +769,7 @@
                     <p class="form-intro">${t.formIntroBug}</p>
                     <form id="mainForm">
                         <input type="hidden" name="type" value="bug">
-                        <input type="hidden" name="lang" value="kk">
+                        <input type="hidden" name="lang" value="${currentLang}">
                         <div class="form-group"><label>${t.labelBugDescription}</label><textarea name="content_main" placeholder="${t.placeholderBugDescription}" required></textarea></div>
                         <div class="form-group"><label>${t.labelBrowser}</label><input type="text" name="content_sub" placeholder="${t.placeholderBrowser}"></div>
                         <div class="form-group"><label>${t.labelScreenshot}</label><div class="file-upload-wrapper"><input type="file" id="screenshotInput" class="file-upload-input" accept="image/png,image/jpeg,image/jpg,image/webp"><label for="screenshotInput" class="file-upload-label"><i class="fas fa-cloud-upload-alt"></i><span id="uploadText">${t.screenshotButtonText}</span></label><div class="file-helper">${t.screenshotHelper}</div><div class="file-preview" id="filePreview"><i class="fas fa-image" style="color: var(--primary);"></i><span class="file-preview-info" id="fileName"></span><button type="button" class="file-remove-btn" id="removeFile">✕</button></div></div></div>
@@ -784,7 +783,7 @@
                     <p class="form-intro">${t.formIntroFeedback}</p>
                     <form id="mainForm">
                         <input type="hidden" name="type" value="feedback">
-                        <input type="hidden" name="lang" value="kk">
+                        <input type="hidden" name="lang" value="${currentLang}">
                         <div class="form-group"><label>${t.labelFeedback}</label><textarea name="content_main" placeholder="${t.placeholderFeedback}" required style="height: 150px;"></textarea></div>
                         <div class="form-group"><label>${t.labelEmail}</label><input type="email" name="email" placeholder="${t.placeholderEmail}"></div>
                         <button type="submit" class="submit-btn">${t.btnSubmit}</button>
@@ -822,9 +821,6 @@
             });
             
             setTimeout(() => attachFormHandler(), 100);
-            
-            // ВАЖНО: Принудительно проверяем футер после смены формы
-            setTimeout(checkFooter, 150);
         }
 
         // === FORM HANDLER ===
@@ -913,36 +909,44 @@
             });
         }
 
-        // === SCROLL REVEAL FOOTER LOGIC (ИСПРАВЛЕНО) ===
+        // === SCROLL REVEAL FOOTER LOGIC ===
+        let lastScrollY = 0;
+        let userHasScrolled = false;
 
         function checkFooter() {
             const footer = document.querySelector('footer');
-            if (!footer) return;
-
-            // Текущее положение скролла + высота окна
-            const scrollPosition = window.innerHeight + window.scrollY;
-            // Полная высота документа
+            const currentScrollY = window.scrollY;
+            
+            // Detect if user has scrolled down
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                userHasScrolled = true;
+            }
+            lastScrollY = currentScrollY;
+            
+            // Only show footer if user has scrolled AND reached bottom
+            const scrollPosition = window.scrollY + window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
             
-            // Если мы доскроллили до низа (с небольшим запасом в 15px)
-            // Это также сработает, если страница короткая и скролла нет
-            if (scrollPosition >= documentHeight - 15) {
+            if (userHasScrolled && scrollPosition >= documentHeight - 10) {
                 footer.classList.add('visible');
             } else {
                 footer.classList.remove('visible');
             }
         }
 
-        // Слушаем скролл и изменение размера окна
         window.addEventListener('scroll', checkFooter);
-        window.addEventListener('resize', checkFooter);
+        
+        // On resize, just recalculate but don't auto-show footer
+        window.addEventListener('resize', () => {
+            if (userHasScrolled) {
+                checkFooter();
+            }
+        });
         
         // Init
         updateLanguage(currentLang);
         renderForm('new_word');
-        
-        // Принудительно проверяем футер при загрузке
-        setTimeout(checkFooter, 200);
+        // Don't check footer on initial load - let user scroll first 
 
     </script>
 </body>
